@@ -12,11 +12,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Create a payment link
     let payment_request = PaymentRequest {
         amount: 100.0,
-        currency: "USD".to_string(),
-        description: "Test payment".to_string(),
-        customer_email: Some("test@example.com".to_string()),
+        message: "Test payment".to_string(),
         user_id: Some("user123".to_string()),
         redirect_url: None,
+        card_only: None,
+        email: Some("test@gmail.com".to_string()),
+        external_id: Some("order123".to_string()),
     };
     let payment_response = PaymentApi::create_payment(&client, &payment_request)?;
     println!("Payment link: {}", payment_response.payment_link);

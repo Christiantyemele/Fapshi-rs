@@ -5,36 +5,51 @@ use serde::{Deserialize, Serialize};
 pub struct PaymentRequest {
     /// The payment amount should be greater than 100.
     pub amount: f64,
-    /// A description of the payment.
-    pub description: String,
     /// If the email is set, then the user will no longer be required to provide his/her email during the payment process
     pub email: Option<String>,
-    /// The customer's email address (optional).
-    pub customer_email: Option<String>,
+    /// URL to which your user will be redirected after completing a payment
+    #[serde(rename = "redirectUrl")]
+    pub redirect_url: Option<String>,
+    /// The user ID associated with the payment (optional).
+    #[serde(rename = "userId")]
+    pub user_id: Option<String>,
+    #[serde(rename ="ExternalId")]
     /// This can be a transaction id, an order id or anything that can be used to reconcile this payment transaction to your application.
     pub external_id: Option<String>,
-    /// The user ID associated with the payment (optional).
-    pub user_id: Option<String>,
-    /// URL to which your user will be redirected after completing a payment
-    pub redirect_url: Option<String>,
+    /// Contains a message describing the reason for the payment.
+    #[serde(rename = "message")]
+    pub message: String,
+    ///  If set to true, only international payment options will be available on the generated link
+    #[serde(rename ="CardOnly")]
+    pub card_only: Option<bool>,
 }
 
 /// Response payload for a created payment link.
 #[derive(Serialize, Deserialize, Debug)]
 pub struct PaymentResponse {
+    pub message: String,
     /// The generated payment link valid for 24hours.
+    #[serde(rename = "link")]
     pub payment_link: String,
     /// The unique transaction ID.
+    #[serde(rename = "transId")]
     pub transaction_id: String,
+    #[serde(rename = "dateInitiated")]
+    pub date_initiated: String,
 }
 
 /// Transaction status information.
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TransactionStatus {
+    #[serde(rename = "transId")]
     /// The unique transaction ID.
     pub transaction_id: String,
     /// The current status
     pub status: Status,
+    /// The payment medium (e.g., "mobile money", "orange money", "card").
+    medium: String,
+    #[serde(rename = "serviceName")]
+    pub service_name: String,
     /// The transaction amount.
     pub amount: f64,
     /// revenue
@@ -43,8 +58,6 @@ pub struct TransactionStatus {
     pub date_initiated: String,
     /// date confirmed
     pub date_confirmed: String,
-    /// The payment medium (e.g., "mobile money", "orange money", "card").
-    medium: String,
 }
 
 #[derive(Debug, Serialize, Deserialize, Default)]
