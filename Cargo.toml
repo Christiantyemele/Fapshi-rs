@@ -1,6 +1,21 @@
 [package]
 name = "fapshi-rs"
+authors = ["Christian Yemele"] 
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
+description = "Rust SDK for Fapshi payment service"
+license = "MIT"
+readme = "README.md"
+keywords = ["payment", "fapshi", "api", "sdk", "rust"]
+categories = ["api-bindings", "web-programming"]
+repository = "https://github.com/Christiantyemele/Fapshi-rs.git"
 
 [dependencies]
+reqwest = { version = "0.12", features = ["json", "blocking"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "1.0"
+url = "2.5"
+
+[dev-dependencies]
+mockito = "1.4"
