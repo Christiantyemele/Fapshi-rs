@@ -12,7 +12,10 @@ impl WebhookApi {
     ///
     /// # Returns
     /// A `Result` indicating success or a `FapshiError` if the request fails.
-    pub fn configure_webhook(client: &FapshiClient, config: &WebhookConfig) -> Result<(), FapshiError> {
+    pub fn configure_webhook(
+        client: &FapshiClient,
+        config: &WebhookConfig,
+    ) -> Result<(), FapshiError> {
         let url = &config.url;
         client.post(url, "{}")?;
         Ok(())

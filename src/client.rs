@@ -19,8 +19,8 @@ use reqwest::{
 pub struct FapshiClient {
     client: Client,
     base_url: String,
-    api_user: String,
-    api_key: String,
+    _api_user: String,
+    _api_key: String,
 }
 
 impl FapshiClient {
@@ -53,8 +53,8 @@ impl FapshiClient {
         Ok(FapshiClient {
             client,
             base_url,
-            api_user: api_user.to_string(),
-            api_key: api_key.to_string(),
+            _api_user: api_user.to_string(),
+            _api_key: api_key.to_string(),
         })
     }
 

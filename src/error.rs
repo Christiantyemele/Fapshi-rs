@@ -1,5 +1,5 @@
-use thiserror::Error;
 use reqwest::Error as ReqwestError;
+use thiserror::Error;
 
 /// Custom error type for the Fapshi SDK.
 ///

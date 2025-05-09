@@ -1,4 +1,8 @@
-use crate::{client::FapshiClient, error::FapshiError, models::{PaymentRequest, PaymentResponse, DirectPaymentRequest, DirectPaymentResponse}};
+use crate::{
+    client::FapshiClient,
+    error::FapshiError,
+    models::{DirectPaymentRequest, DirectPaymentResponse, PaymentRequest, PaymentResponse},
+};
 
 /// API for managing payment links and direct payments.
 pub struct PaymentApi;
@@ -29,7 +33,10 @@ impl PaymentApi {
     /// let response = PaymentApi::create_payment(&client, &request).unwrap();
     /// println!("Payment link: {}", response.payment_link);
     /// ```
-    pub fn create_payment(client: &FapshiClient, request: &PaymentRequest) -> Result<PaymentResponse, FapshiError> {
+    pub fn create_payment(
+        client: &FapshiClient,
+        request: &PaymentRequest,
+    ) -> Result<PaymentResponse, FapshiError> {
         let body = serde_json::to_string(request)?;
         println!("{}", body);
         let response = client.post("initiate-pay", &body).unwrap();
@@ -61,7 +68,10 @@ impl PaymentApi {
     /// let response = PaymentApi::initiate_direct_payment(&client, &request).unwrap();
     /// println!("Transaction ID: {}", response.transaction_id);
     /// ```
-    pub fn initiate_direct_payment(client: &FapshiClient, request: &DirectPaymentRequest) -> Result<DirectPaymentResponse, FapshiError> {
+    pub fn initiate_direct_payment(
+        client: &FapshiClient,
+        request: &DirectPaymentRequest,
+    ) -> Result<DirectPaymentResponse, FapshiError> {
         let body = serde_json::to_string(request)?;
         let response = client.post("direct-pay", &body)?;
         let direct_response: DirectPaymentResponse = serde_json::from_str(&response)?;

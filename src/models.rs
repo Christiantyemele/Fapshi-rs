@@ -13,17 +13,22 @@ pub struct PaymentRequest {
     /// The user ID associated with the payment (optional).
     #[serde(rename = "userId")]
     pub user_id: Option<String>,
-    #[serde(rename ="ExternalId")]
+    #[serde(rename = "ExternalId")]
     /// This can be a transaction id, an order id or anything that can be used to reconcile this payment transaction to your application.
     pub external_id: Option<String>,
     /// Contains a message describing the reason for the payment.
     #[serde(rename = "message")]
     pub message: String,
     ///  If set to true, only international payment options will be available on the generated link
-    #[serde(rename ="CardOnly")]
+    #[serde(rename = "CardOnly")]
     pub card_only: Option<bool>,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+pub struct PaymentTransactionResponse {
+    #[serde(rename = "transId")]
+    pub transaction_id: String,
+}
 /// Response payload for a created payment link.
 #[derive(Serialize, Deserialize, Debug)]
 pub struct PaymentResponse {
@@ -42,24 +47,37 @@ pub struct PaymentResponse {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TransactionStatus {
     #[serde(rename = "transId")]
-    /// The unique transaction ID.
     pub transaction_id: String,
-    /// The current status
     pub status: Status,
-    /// The payment medium (e.g., "mobile money", "orange money", "card").
-    medium: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub medium: Option<String>,
     #[serde(rename = "serviceName")]
     pub service_name: String,
-    /// The transaction amount.
     pub amount: f64,
-    /// revenue
-    pub revenue: f64,
-    /// date initiated
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub revenue: Option<f64>,
+    #[serde(rename = "payerName")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payer_name: Option<String>,
+    pub email: String,
+    #[serde(rename = "redirectUrl")]
+    pub redirect_url: String,
+    #[serde(rename = "externalId")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub external_id: Option<String>,
+    #[serde(rename = "userId")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_id: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub webhook: Option<String>,
+    #[serde(rename = "financialTransId")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub financial_transaction_id: Option<String>,
+    #[serde(rename = "dateInitiated")]
     pub date_initiated: String,
-    /// date confirmed
+    #[serde(rename = "dateConfirmed")]
     pub date_confirmed: String,
 }
-
 #[derive(Debug, Serialize, Deserialize, Default)]
 pub enum Status {
     #[default]
@@ -68,6 +86,19 @@ pub enum Status {
     SUCCESSFUL,
     FAILED,
     EXPIRED,
+}
+
+impl From<String> for Status {
+    fn from(s: String) -> Self {
+        match s.to_lowercase().as_str() {
+            "created" => Status::CREATED,
+            "pending" => Status::PENDING,
+            "successful" => Status::SUCCESSFUL,
+            "failed" => Status::FAILED,
+            "expired" => Status::EXPIRED,
+            _ => Status::CREATED,
+        }
+    }
 }
 
 /// Expired Transaction
@@ -97,24 +128,39 @@ pub struct WebhookConfig {
 /// Request payload for initiating a direct payment to a mobile device.
 #[derive(Serialize, Deserialize, Debug)]
 pub struct DirectPaymentRequest {
-    /// The payment amount (amount >= 100).
-    pub amount: f64,
-    /// The currency code (e.g., "USD").
-    pub currency: String,
-    /// The phone number to receive the payment prompt.
-    pub phone_number: String,
-    /// A description of the payment.
-    pub description: String,
+    /// The payment amount (integer >= 100).
+    pub amount: f32, // Changed to i32 to enforce integer type
+    /// The phone number to which the request will be performed (e.g., 67XXXXXXX).
+    pub phone: String,
+    /// The payment medium (either "mobile money" or "orange money").
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub medium: Option<String>, // Optional, restricted to "mobile money" or "orange money"
+    /// The name of the user performing the payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>, // Optional
+    /// The email of the user performing the payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub email: Option<String>, // Optional
+    /// The user ID in the caller's system (1-100 characters, alphanumeric with -_).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_id: Option<String>, // Optional
+    /// The external ID for reconciliation (1-100 characters, alphanumeric with -_).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub external_id: Option<String>, // Optional
+    /// A message describing the reason for the payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>, // Optional, renamed from description
 }
-
 /// Response payload for a direct payment request.
 #[derive(Serialize, Deserialize, Debug)]
 pub struct DirectPaymentResponse {
     /// The unique transaction ID.
+    #[serde(rename = "transId")]
     pub transaction_id: String,
     /// The status of the direct payment request.
-    pub status: String,
+    pub message: String,
     /// date initiated
+    #[serde(rename = "dateInitiated")]
     pub date_initiated: String,
 }
 
@@ -142,6 +188,7 @@ pub struct TransactionSearchQuery {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TransactionList {
     /// Array of transactions matching the query.
+    #[serde(flatten)]
     pub transactions: Vec<TransactionStatus>,
 }
 

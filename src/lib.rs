@@ -1,3 +1,4 @@
+pub mod api;
 /// Fapshi SDK for Rust
 ///
 /// This crate provides a convenient and type-safe interface for interacting with the Fapshi payment service API.
@@ -25,6 +26,5 @@
 /// println!("Payment link: {}", response.payment_link);
 /// ``
 pub mod client;
-pub mod api;
 pub mod error;
 pub mod models;

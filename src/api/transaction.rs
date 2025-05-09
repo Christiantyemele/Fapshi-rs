@@ -1,4 +1,8 @@
-use crate::{client::FapshiClient, error::FapshiError, models::{TransactionStatus, TransactionList}};
+use crate::{
+    client::FapshiClient,
+    error::FapshiError,
+    models::{PaymentTransactionResponse, TransactionStatus},
+};
 
 /// API for querying and managing transactions.
 pub struct TransactionApi;
@@ -12,9 +16,13 @@ impl TransactionApi {
     ///
     /// # Returns
     /// A `Result` containing the `TransactionStatus` or a `FapshiError` if the request fails.
-    pub fn get_status(client: &FapshiClient, transaction_id: &str) -> Result<TransactionStatus, FapshiError> {
-        let endpoint = format!("payment-status/:{}", transaction_id);
+    pub fn get_status(
+        client: &FapshiClient,
+        transaction_id: &str,
+    ) -> Result<TransactionStatus, FapshiError> {
+        let endpoint = format!("payment-status/{}", transaction_id);
         let response = client.get(&endpoint)?;
+        println!("{}", response);
         let status: TransactionStatus = serde_json::from_str(&response)?;
         Ok(status)
     }
@@ -35,9 +43,15 @@ impl TransactionApi {
     /// let client = FapshiClient::new("your_api_user", "your_api_key", true).unwrap();
     /// TransactionApi::expire_transaction(&client, "trans123").unwrap();
     /// ```
-    pub fn expire_transaction(client: &FapshiClient, transaction_id: &str) -> Result<(), FapshiError> {
+    pub fn expire_transaction(
+        client: &FapshiClient,
+        transaction_id: &str,
+    ) -> Result<(), FapshiError> {
         let endpoint = "expire-pay";
-        client.post(&endpoint, transaction_id)?;
+        let transaction = serde_json::to_string(&PaymentTransactionResponse {
+            transaction_id: transaction_id.to_string(),
+        })?;
+        client.post(endpoint, &transaction)?;
         Ok(())
     }
 
@@ -60,10 +74,13 @@ impl TransactionApi {
     ///     println!("Transaction ID: {}, Status: {}", tx.transaction_id, tx.status);
     /// }
     /// ```
-    pub fn get_transactions_by_user_id(client: &FapshiClient, user_id: &str) -> Result<TransactionList, FapshiError> {
-        let endpoint = format!("transaction/:{}", user_id);
+    pub fn get_transactions_by_user_id(
+        client: &FapshiClient,
+        user_id: &str,
+    ) -> Result<Vec<TransactionStatus>, FapshiError> {
+        let endpoint = format!("transaction/{}", user_id);
         let response = client.get(&endpoint)?;
-        let transactions: TransactionList = serde_json::from_str(&response)?;
+        let transactions: Vec<TransactionStatus> = serde_json::from_str(&response)?;
         Ok(transactions)
     }
 
@@ -96,7 +113,7 @@ impl TransactionApi {
     //     url.path_segments_mut()
     //         .map_err(|_| FapshiError::ApiError("Invalid base URL".to_string()))?
     //         .extend(&["transaction", "search"]);
-        
+
     //     let mut pairs = url.query_pairs_mut();
     //     if let Some(status) = &query.status {
     //         pairs.append_pair("status", status);
