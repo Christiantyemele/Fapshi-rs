@@ -3,11 +3,11 @@ The fapshi-sdk crate provides a type-safe and convenient Rust interface for inte
 
 ## Features
 
-Authenticated Requests: Automatically handles apiuser and apikey authentication.
-Sandbox Support: Test your integration in Fapshi's sandbox environment.
-Modular API: Separate modules for payments, transactions, webhooks, and balance.
-Error Handling: Comprehensive error types for HTTP, API, and serialization issues.
-Type Safety: Uses Rust's strong typing with serde for JSON serialization.
+**Authenticated Requests:** Automatically handles apiuser and apikey authentication.
+**Sandbox Support:** Test your integration in Fapshi's sandbox environment.
+**Modular API:** Separate modules for payments, transactions, webhooks, and balance.
+**Error Handling:** Comprehensive error types for HTTP, API, and serialization issues.
+**Type Safety:** Uses Rust's strong typing with serde for JSON serialization.
 
 ## Installation
 Add the following to your Cargo.toml:
