@@ -14,7 +14,10 @@ use reqwest::{
 /// ```
 /// use fapshi_rs::client::FapshiClient;
 ///
-/// let client = FapshiClient::new("your_api_user", "your_api_key", true).unwrap();
+/// use std::env;
+/// let api_user = env::var("FAPSHI_API_USER").expect("FAPSHI_API_USER not set");
+/// let api_key = env::var("FAPSHI_API_KEY").expect("FAPSHI_API_KEY not set");
+/// let client = FapshiClient::new(&api_user, &api_key, true)?;
 /// ```
 pub struct FapshiClient {
     client: Client,

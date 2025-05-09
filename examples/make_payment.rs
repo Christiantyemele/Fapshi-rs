@@ -3,15 +3,15 @@ use fapshi_rs::{
     client::FapshiClient,
     models::{DirectPaymentRequest, PaymentRequest},
 };
+use std::env;
 
 /// Example demonstrating how to use the Fapshi SDK for various API operations.
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Initialize the client in sandbox mode
-    let client = FapshiClient::new(
-        "your_apiuser", // cf58da14-1daa-4d48-a5c6-9033d479fcc1
-        "your_apikey",  //  "FAK_TEST_74f26535e703330ebd13",
-        true,
-    )?;
+    dotenv::dotenv().ok();
+    let api_user = env::var("FAPSHI_API_USER").expect("FAPSHI_API_USER not set");
+    let api_key = env::var("FAPSHI_API_KEY").expect("FAPSHI_API_KEY not set");
+    let client = FapshiClient::new(&api_user, &api_key, true)?;
 
     // Create a payment link
     let payment_request = PaymentRequest {

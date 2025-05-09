@@ -15,7 +15,10 @@ pub mod api;
 /// ```
 /// use fapshi_sdk::{FapshiClient, models::PaymentRequest, api::payment::PaymentApi};
 ///
-/// let client = FapshiClient::new("your_api_user", "your_api_key", true).unwrap();
+/// use std::env;
+/// let api_user = env::var("FAPSHI_API_USER").expect("FAPSHI_API_USER not set");
+/// let api_key = env::var("FAPSHI_API_KEY").expect("FAPSHI_API_KEY not set");
+/// let client = FapshiClient::new(&api_user, &api_key, true)?;
 /// let request = PaymentRequest {
 ///     amount: 100.0,
 ///     currency: "USD".to_string(),

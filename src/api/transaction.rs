@@ -68,7 +68,10 @@ impl TransactionApi {
     /// ```
     /// use fapshi_sdk::{FapshiClient, api::transaction::TransactionApi};
     ///
-    /// let client = FapshiClient::new("your_api_user", "your_api_key", true).unwrap();
+    /// use std::env;
+    /// let api_user = env::var("FAPSHI_API_USER").expect("FAPSHI_API_USER not set");
+    /// let api_key = env::var("FAPSHI_API_KEY").expect("FAPSHI_API_KEY not set");
+    /// let client = FapshiClient::new(&api_user, &api_key, true)?;
     /// let transactions = TransactionApi::get_transactions_by_user_id(&client, "user123").unwrap();
     /// for tx in transactions.transactions {
     ///     println!("Transaction ID: {}, Status: {}", tx.transaction_id, tx.status);
