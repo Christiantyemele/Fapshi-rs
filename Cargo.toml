@@ -1,6 +1,6 @@
 [package]
 name = "fapshi-rs"
-authors = ["Christian Yemele"] 
+authors = ["Christian Yemele yemelechristian2@gmail.com"] 
 version = "0.1.0"
 edition = "2021"
 description = "Rust SDK for Fapshi payment service"
