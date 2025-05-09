@@ -20,9 +20,12 @@ impl PaymentApi {
     ///
     /// # Example
     /// ```
+    /// use std::env;
     /// use fapshi_sdk::{FapshiClient, models::PaymentRequest, api::payment::PaymentApi};
     ///
-    /// let client = FapshiClient::new("your_api_user", "your_api_key", true).unwrap();
+    /// let api_user = env::var("FAPSHI_API_USER").expect("FAPSHI_API_USER not set");
+    /// let api_key = env::var("FAPSHI_API_KEY").expect("FAPSHI_API_KEY not set");
+    /// let client = FapshiClient::new(&api_user, &api_key, true)?;
     /// let request = PaymentRequest {
     ///     amount: 100.0,
     ///     currency: "USD".to_string(),
@@ -58,12 +61,18 @@ impl PaymentApi {
     /// ```
     /// use fapshi_sdk::{FapshiClient, models::DirectPaymentRequest, api::payment::PaymentApi};
     ///
-    /// let client = FapshiClient::new("your_api_user", "your_api_key", true).unwrap();
+    /// let api_user = env::var("FAPSHI_API_USER").expect("FAPSHI_API_USER not set");
+    /// let api_key = env::var("FAPSHI_API_KEY").expect("FAPSHI_API_KEY not set");
+    /// let client = FapshiClient::new(&api_user, &api_key, true)?;
     /// let request = DirectPaymentRequest {
-    ///     amount: 50.0,
-    ///     currency: "USD".to_string(),
-    ///     phone_number: "1234567890".to_string(),
-    ///     description: "Direct payment test".to_string(),
+    ///     amount: 500.0,
+    ///     phone: "654988322".to_string(),
+    ///     medium: Some("mobile money".to_string()),
+    ///     name: Some("Wilfried".to_string()),
+    ///     email: Some("yemelechristian2@gmail.com".to_string()),
+    ///     user_id: Some("abcdef12345".to_string()),
+    ///     external_id: Some("order123".to_string()),
+    ///     message: Some("Direct payment test".to_string()),
     /// };
     /// let response = PaymentApi::initiate_direct_payment(&client, &request).unwrap();
     /// println!("Transaction ID: {}", response.transaction_id);

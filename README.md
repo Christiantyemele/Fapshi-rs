@@ -1,6 +1,7 @@
 # Fapshi SDK for Rust
 The fapshi-sdk crate provides a type-safe and convenient Rust interface for integrating with the Fapshi payment service API. It enables developers to create payment links, initiate direct payments, query transaction statuses, expire transactions, retrieve transactions by user ID, search transactions, configure webhooks, and check service balance.
-Features
+
+## Features
 
 Authenticated Requests: Automatically handles apiuser and apikey authentication.
 Sandbox Support: Test your integration in Fapshi's sandbox environment.
@@ -34,15 +35,14 @@ use fapshi_rs::{
 /// Example demonstrating how to use the Fapshi SDK for various API operations.
 fn main() -> Result<(), Box<dyn std::error::Error>> {
    // Initialize the client in sandbox mode
-    let client = FapshiClient::new(
-        "your_apiuser", // cf58da14-1daa-4d48-a5c6-9033d479fcc1
-        "your_apikey",  //  "FAK_TEST_74f26535e703330ebd13",
-        true,
-    )?;
+    dotenv::dotenv().ok();
+    let api_user = env::var("FAPSHI_API_USER").expect("FAPSHI_API_USER not set");
+    let api_key = env::var("FAPSHI_API_KEY").expect("FAPSHI_API_KEY not set");
+    let client = FapshiClient::new(&api_user, &api_key, true)?;
 
     // Create a payment link
     let payment_request = PaymentRequest {
-        amount: 300.0,
+        amount: 100.0,
         email: Some("yemelechristian2@gmail.com".to_string()),
         redirect_url: Some("https://mywebsite.com".to_string()),
         user_id: Some("abcdef12345".to_string()),
@@ -69,7 +69,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Initiate a direct payment
     let direct_request = DirectPaymentRequest {
         amount: 500.0,
-        phone: "654988322".to_string(),
+        phone: "670000000".to_string(),
         medium: Some("mobile money".to_string()),
         name: Some("Wilfried".to_string()),
         email: Some("yemelechristian2@gmail.com".to_string()),
@@ -98,7 +98,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 **To run the example:**
 
 **Clone the repository:** `git clone https://github.com/Christiantyemele/Fapshi-rs.git`
-Replace `"your_api_user"` and `"your_api_key"` with your Fapshi credentials.
+Replace `"your_api_user"` and `"your_api_key"` in the .env with your Fapshi credentials.
 Run the example: 
 ```
 cargo run --example make_payment
@@ -108,14 +108,15 @@ cargo run --example make_payment
 Contributions are welcome! Please submit issues or pull requests to the GitHub repository.
 
 **Fork the repository.**
-Create a feature branch: git checkout -b feature-name
-Commit your changes: git commit -m "Add feature"
-Push to the branch: git push origin feature-name
+Create a feature branch: `git checkout -b feature-name`
+Commit your changes: `git commit -m "Add feature"`
+Push to the branch: `git push origin feature-name`
 Open a pull request.
 
-License
-This project is licensed under the MIT License. See the LICENSE file for details.
-Support
+### License
+This project is licensed under the APACHE License. See the LICENSE file for details.
+
+### Support
 For questions about the Fapshi API, refer to documentation.fapshi.com or contact Fapshi support. For SDK-specific issues, open a GitHub issue.
 
 Built with 💖 for the FAPSHI service.

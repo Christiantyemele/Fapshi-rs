@@ -15,9 +15,11 @@ impl BalanceApi {
     ///
     /// # Example
     /// ```
+    /// use std::env;
     /// use fapshi_sdk::{FapshiClient, api::balance::BalanceApi};
-    ///
-    /// let client = FapshiClient::new("your_api_user", "your_api_key", true).unwrap();
+    /// let api_user = env::var("FAPSHI_API_USER").expect("FAPSHI_API_USER not set");
+    /// let api_key = env::var("FAPSHI_API_KEY").expect("FAPSHI_API_KEY not set");
+    /// let client = FapshiClient::new(&api_user, &api_key, true)?;
     /// let balance = BalanceApi::get_service_balance(&client).unwrap();
     /// println!("Balance: {} {}", balance.balance, balance.currency);
     /// ```
