@@ -1,8 +1,10 @@
 use crate::error::FapshiError;
-use reqwest::{
-    blocking::Client,
-    header::{HeaderMap, HeaderValue},
-};
+#[cfg(not(feature = "async"))]
+use reqwest::blocking::Client;
+#[cfg(feature = "async")]
+use reqwest::Client;
+
+use reqwest::header::{HeaderMap, HeaderValue};
 
 /// The main client for interacting with the Fapshi API.
 ///
@@ -68,10 +70,38 @@ impl FapshiClient {
     ///
     /// # Returns
     /// A `Result` containing the response body as a `String` or a `FapshiError`.
+    #[cfg(not(feature = "async"))]
     pub fn get(&self, endpoint: &str) -> Result<String, FapshiError> {
         let url = format!("{}/{}", self.base_url, endpoint);
         let response = self.client.get(&url).send()?.error_for_status()?;
         Ok(response.text()?)
+    }
+
+    /// Sends a GET request to the specified API endpoint asynchronously.
+    ///
+    /// # Arguments
+    /// * `endpoint` - The API endpoint path (e.g., "/transaction/status/123").
+    ///
+    /// # Returns
+    /// A `Result` containing the response body as a `String` or a `FapshiError`.
+    ///
+    /// # Example
+    /// ```
+    /// use fapshi_rs::client::FapshiClient;
+    ///
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = FapshiClient::new("your_api_user", "your_api_key", true)?;
+    /// let response = client.get("transaction/status/123").await?;
+    /// println!("Response: {}", response);
+    /// # Ok(())
+    /// # }
+    /// ```
+    #[cfg(feature = "async")]
+    pub async fn get(&self, endpoint: &str) -> Result<String, FapshiError> {
+        let url = format!("{}/{}", self.base_url, endpoint);
+        let response = self.client.get(&url).send().await?.error_for_status()?;
+        Ok(response.text().await?)
     }
 
     /// Sends a POST request to the specified API endpoint with a JSON body.
@@ -82,6 +112,7 @@ impl FapshiClient {
     ///
     /// # Returns
     /// A `Result` containing the response body as a `String` or a `FapshiError`.
+    #[cfg(not(feature = "async"))]
     pub fn post(&self, endpoint: &str, body: &str) -> Result<String, FapshiError> {
         let url = format!("{}/{}", self.base_url, endpoint);
         let response = self
@@ -91,5 +122,39 @@ impl FapshiClient {
             .send()?
             .error_for_status()?;
         Ok(response.text()?)
+    }
+
+    /// Sends a POST request to the specified API endpoint with a JSON body asynchronously.
+    ///
+    /// # Arguments
+    /// * `endpoint` - The API endpoint path (e.g., "payment/create").
+    /// * `body` - The JSON body as a string.
+    ///
+    /// # Returns
+    /// A `Result` containing the response body as a `String` or a `FapshiError`.
+    ///
+    /// # Example
+    /// ```
+    /// use fapshi_rs::client::FapshiClient;
+    ///
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = FapshiClient::new("your_api_user", "your_api_key", true)?;
+    /// let response = client.post("payment/create", r#"{"amount": 100}"#).await?;
+    /// println!("Response: {}", response);
+    /// # Ok(())
+    /// # }
+    /// ```
+    #[cfg(feature = "async")]
+    pub async fn post(&self, endpoint: &str, body: &str) -> Result<String, FapshiError> {
+        let url = format!("{}/{}", self.base_url, endpoint);
+        let response = self
+            .client
+            .post(&url)
+            .body(body.to_string())
+            .send()
+            .await?
+            .error_for_status()?;
+        Ok(response.text().await?)
     }
 }

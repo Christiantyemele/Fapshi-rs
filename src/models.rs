@@ -126,7 +126,7 @@ pub struct WebhookConfig {
 }
 
 /// Request payload for initiating a direct payment to a mobile device.
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DirectPaymentRequest {
     /// The payment amount (integer >= 100).
     pub amount: f32, // Changed to i32 to enforce integer type
