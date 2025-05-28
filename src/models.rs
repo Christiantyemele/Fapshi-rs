@@ -24,13 +24,13 @@ pub struct PaymentRequest {
     pub card_only: Option<bool>,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PaymentTransactionResponse {
     #[serde(rename = "transId")]
     pub transaction_id: String,
 }
 /// Response payload for a created payment link.
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PaymentResponse {
     pub message: String,
     /// The generated payment link valid for 24hours.
@@ -44,7 +44,7 @@ pub struct PaymentResponse {
 }
 
 /// Transaction status information.
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct TransactionStatus {
     #[serde(rename = "transId")]
     pub transaction_id: String,
@@ -78,7 +78,7 @@ pub struct TransactionStatus {
     #[serde(rename = "dateConfirmed")]
     pub date_confirmed: String,
 }
-#[derive(Debug, Serialize, Deserialize, Default)]
+#[derive(Debug, Serialize, Deserialize, Default, Clone, PartialEq, Eq)]
 pub enum Status {
     #[default]
     CREATED,
@@ -102,11 +102,13 @@ impl From<String> for Status {
 }
 
 /// Expired Transaction
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ExpiredTransaction {
     /// The unique transaction ID.
     pub transaction_id: String,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ExpiredTransactionResponse {
     /// The status of the expired transaction.
     pub status: String,
@@ -117,7 +119,7 @@ pub struct ExpiredTransactionResponse {
 }
 
 /// Configuration for a webhook.
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct WebhookConfig {
     /// The URL to receive webhook notifications.
     pub url: String,
@@ -152,7 +154,7 @@ pub struct DirectPaymentRequest {
     pub message: Option<String>, // Optional, renamed from description
 }
 /// Response payload for a direct payment request.
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DirectPaymentResponse {
     /// The unique transaction ID.
     #[serde(rename = "transId")]
@@ -165,7 +167,7 @@ pub struct DirectPaymentResponse {
 }
 
 /// Query parameters for searching transactions.
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct TransactionSearchQuery {
     /// Transaction status (e.g., "created", "successful", "failed", "expired").
     pub status: Status,
@@ -193,7 +195,7 @@ pub struct TransactionList {
 }
 
 /// Response payload for service balance.
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ServiceBalance {
     /// The current balance amount.
     pub balance: f64,
@@ -201,6 +203,7 @@ pub struct ServiceBalance {
     pub currency: String,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Payouts {
     /// amount to be sent to the user.
     pub amount: f64,

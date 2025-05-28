@@ -21,6 +21,7 @@ use reqwest::header::{HeaderMap, HeaderValue};
 /// let api_key = env::var("FAPSHI_API_KEY").expect("FAPSHI_API_KEY not set");
 /// let client = FapshiClient::new(&api_user, &api_key, true)?;
 /// ```
+#[derive(Debug, Clone)]
 pub struct FapshiClient {
     client: Client,
     base_url: String,
